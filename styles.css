@@ -1,0 +1,394 @@
+:root {
+  --field: #aeb79c;
+  --paper: #efe3c8;
+  --paper-deep: #e0d0aa;
+  --paper-light: #f6edd7;
+  --ink: #3b2a1d;
+  --muted: #6b5846;
+  --green: #4f6144;
+  --lead: #5c5a55;
+  --error: #5a1f10;
+
+  --display: "Klee One", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --text: "Newsreader", Georgia, "Times New Roman", serif;
+
+  /* One type scale for every page: note, small, body, lead, page title, cover title */
+  --fs-note: 0.8125rem;
+  --fs-small: 0.9375rem;
+  --fs-body: 1.0625rem;
+  --fs-lead: 1.1875rem;
+  --fs-h2: 1.75rem;
+  --fs-h1: 3.25rem;
+
+  /* One spacing scale, in half-rem steps */
+  --s-1: 0.5rem;
+  --s-2: 1rem;
+  --s-3: 1.5rem;
+  --s-4: 2.25rem;
+
+  --booklet-w: 380px;
+  --booklet-h: min(700px, calc(100dvh - 9rem));
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { overflow-x: clip; }
+
+body {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  margin: 0;
+  padding: var(--s-3) var(--s-2);
+  background: var(--field);
+  color: var(--ink);
+  font-family: var(--text);
+  font-size: var(--fs-body);
+  font-optical-sizing: auto;
+  font-kerning: normal;
+  font-variant-numeric: oldstyle-nums;
+  line-height: 1.6;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+a { color: var(--green); text-underline-offset: 0.2em; }
+
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+/* The desk and the booklet */
+.desk {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.booklet {
+  position: relative;
+  width: min(var(--booklet-w), 100%);
+  height: var(--booklet-h);
+  min-height: 30rem;
+  background: var(--paper);
+  border-radius: 2px 6px 6px 2px;
+  box-shadow: 0 1px 0 rgba(59, 42, 29, 0.15), 0 20px 30px -20px rgba(40, 30, 10, 0.5);
+}
+
+.pages {
+  position: absolute;
+  inset: 0;
+  perspective: 1600px;
+}
+
+.spine {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 5;
+  width: 10px;
+  background: var(--paper-deep);
+  border-right: 1px solid rgba(59, 42, 29, 0.18);
+  pointer-events: none;
+}
+
+.staple {
+  position: absolute;
+  left: 2px;
+  z-index: 6;
+  width: 13px;
+  height: 3px;
+  background: #77746c;
+  border-radius: 1px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+.staple-top { top: 22%; }
+.staple-bottom { bottom: 22%; }
+
+/* Page turning: a leaf lifts and swings away from the staples */
+.page {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--paper);
+  transform-origin: left center;
+  backface-visibility: hidden;
+  visibility: hidden;
+  transition:
+    transform 0.7s cubic-bezier(0.45, 0.05, 0.25, 1),
+    opacity 0.7s ease,
+    visibility 0s linear 0.7s;
+}
+
+.page[data-state="current"] {
+  z-index: 2;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.page[data-state="before"] {
+  z-index: 3;
+  transform: rotateY(-110deg);
+  opacity: 0;
+}
+
+.page-inner {
+  height: 100%;
+  padding: var(--s-4) 1.75rem 3.25rem 2.75rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--paper-deep) transparent;
+}
+
+.numeral {
+  position: absolute;
+  right: var(--s-2);
+  bottom: 0.85rem;
+  font-family: var(--display);
+  font-size: var(--fs-note);
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+/* Headings: Klee One, balanced lines, always clear of the text beneath */
+h1, h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 600;
+  hyphens: manual;
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--fs-h1); line-height: 1; letter-spacing: -0.01em; }
+h2 { margin-bottom: var(--s-3); font-size: var(--fs-h2); line-height: 1.2; }
+
+/* Running text: Newsreader, ragged right, hyphenated, no stranded last words */
+p {
+  margin: 0 0 var(--s-2);
+  hyphens: auto;
+  text-wrap: pretty;
+}
+
+.run-in {
+  font-family: var(--display);
+  font-weight: 600;
+}
+
+/* Cover */
+.page-cover .page-inner { display: flex; flex-direction: column; }
+
+.page-cover::before {
+  content: "";
+  position: absolute;
+  top: 2.5rem;
+  right: 1.2rem;
+  width: 7rem;
+  height: 7rem;
+  border: 0.4rem solid rgba(142, 98, 40, 0.11);
+  border-radius: 48% 52% 50% 50% / 52% 46% 54% 48%;
+  box-shadow: inset 0 0 0.8rem rgba(142, 98, 40, 0.12);
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+.ko {
+  margin: var(--s-1) 0 0;
+  font-family: "Nanum Myeongjo", "Noto Serif KR", "Batang", serif;
+  font-size: 1.15rem;
+  color: var(--muted);
+}
+
+.cover-note { max-width: 20rem; margin: var(--s-4) 0 0; }
+
+.sketch {
+  width: 13rem;
+  margin: auto 0 0 auto;
+}
+
+.sketch svg { display: block; width: 100%; height: auto; }
+.sketch svg.is-empty { display: none; }
+
+.sketch figcaption {
+  margin-top: 0.25rem;
+  font-family: var(--display);
+  font-size: var(--fs-note);
+  line-height: 1.4;
+  color: var(--lead);
+}
+
+/* The pencil scribble: drawn once when the weather arrives */
+.pencil path {
+  fill: none;
+  stroke: var(--lead);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 1.6s ease-out forwards;
+  animation-delay: calc(var(--n) * 0.18s);
+}
+
+.pencil-stroke { stroke-width: 1.7; opacity: 0.9; }
+.pencil-ghost { stroke-width: 0.9; opacity: 0.5; transform: translate(0.9px, 0.7px); }
+
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Setup page */
+.lede { margin: 0; font-size: var(--fs-small); color: var(--muted); }
+
+.hint { display: block; margin: 0; font-size: var(--fs-small); color: var(--muted); }
+
+.controls { display: grid; gap: var(--s-3); margin-top: var(--s-3); }
+.field { display: grid; gap: 0.35rem; }
+.field label { font-size: var(--fs-small); color: var(--muted); }
+
+.btn,
+select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.55rem var(--s-2);
+  font: inherit;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+}
+
+select { background: var(--paper); }
+
+.btn { cursor: pointer; text-align: left; }
+.btn:hover { background: var(--paper-deep); }
+.btn-primary { background: var(--ink); color: var(--paper); }
+.btn-primary:hover { background: #2a1d13; }
+.btn[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: var(--paper); }
+
+/* Exhibition pages: running head, plate, title, place, description, practical notes */
+.page-note {
+  margin: 0 0 var(--s-2);
+  font-size: var(--fs-small);
+  font-style: italic;
+  color: var(--muted);
+}
+
+.plate { margin: 0 0 var(--s-3); }
+
+.plate-frame {
+  padding: 0.4rem;
+  background: var(--paper-light);
+  border: 1px solid rgba(59, 42, 29, 0.25);
+  box-shadow: 0 1px 0 rgba(59, 42, 29, 0.15);
+  transform: rotate(-0.5deg);
+}
+
+.plate img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  background: var(--paper-deep);
+  filter: sepia(0.4) saturate(0.8) contrast(0.95);
+}
+
+.plate figcaption {
+  margin-top: var(--s-1);
+  font-size: var(--fs-note);
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.page-exhibition h2 { margin-bottom: 0.4rem; }
+
+.venue { margin: 0 0 var(--s-2); font-style: italic; color: var(--green); }
+
+.blurb {
+  margin: 0 0 var(--s-3);
+  font-size: var(--fs-lead);
+  line-height: 1.55;
+}
+
+.reasons {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: var(--s-2) 0 0;
+  border-top: 1px solid rgba(59, 42, 29, 0.25);
+  font-size: var(--fs-small);
+  list-style: none;
+}
+
+.reasons li { position: relative; padding-left: 1.1rem; }
+
+.reasons li::before {
+  content: "";
+  position: absolute;
+  top: 0.8em;
+  left: 0;
+  width: 0.6rem;
+  border-top: 1px solid var(--lead);
+}
+
+.reasons .is-closing {
+  font-style: italic;
+  text-decoration: underline wavy var(--lead) 1px;
+  text-underline-offset: 0.3em;
+}
+
+/* Turning controls and status sit on the quiet field */
+.turn {
+  display: flex;
+  justify-content: space-between;
+  width: min(var(--booklet-w), 100%);
+}
+
+.turn-btn {
+  min-height: 2.75rem;
+  padding: var(--s-1) 0.15rem;
+  font-family: var(--display);
+  font-size: 1rem;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  cursor: pointer;
+}
+
+.turn-btn:disabled { opacity: 0.4; cursor: default; border-bottom-color: transparent; }
+
+.status {
+  width: min(var(--booklet-w), 100%);
+  min-height: 1.5em;
+  margin: 0;
+  font-size: var(--fs-small);
+  text-align: center;
+}
+
+.status.is-error { color: var(--error); font-weight: 600; }
+
+.status button {
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+@media (max-width: 26rem) {
+  body { padding: var(--s-2) 0.75rem; }
+  :root { --fs-h1: 2.9rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page { transition: none; }
+  .pencil path { animation: none; stroke-dashoffset: 0; }
+}

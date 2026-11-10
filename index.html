@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A pocket booklet that ranks the current exhibitions at the National Museum of Modern and Contemporary Art, Korea by closing date, travel time and weather.">
+  <title>Last Look: MMCA, Korea</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="desk">
+    <div class="booklet">
+      <div id="pages" class="pages">
+
+        <section class="page page-cover" role="group" aria-roledescription="page">
+          <div class="page-inner">
+            <h1>Last Look</h1>
+            <p class="ko" lang="ko">마지막 관람</p>
+            <p class="cover-note">Five shows at the National Museum of Modern and Contemporary Art, Korea, ranked by when they close, how far away you are and what the weather is doing. Turn the page to begin.</p>
+            <figure class="sketch">
+              <svg id="scribble" class="is-empty" viewBox="0 0 120 100" role="img" aria-label="Pencil sketch of today's weather">
+                <defs>
+                  <filter id="pencil-rough" x="-5%" y="-5%" width="110%" height="110%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" result="grain"></feTurbulence>
+                    <feDisplacementMap in="SourceGraphic" in2="grain" scale="1.6"></feDisplacementMap>
+                  </filter>
+                </defs>
+              </svg>
+              <figcaption id="weather-note">Reading the weather in Seoul…</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="page page-setup" role="group" aria-roledescription="page">
+          <div class="page-inner">
+            <h2>Where are you starting from?</h2>
+            <p class="lede">Share your location or pick a place. Your position stays in this browser.</p>
+            <div class="controls">
+              <button id="locate-btn" class="btn btn-primary" type="button">Use my location</button>
+              <div class="field">
+                <label for="area-select">Or choose a place in Seoul</label>
+                <select id="area-select">
+                  <option value="" selected disabled>Choose a place</option>
+                  <option value="37.4979,127.0276">Gangnam</option>
+                  <option value="37.5563,126.9236">Hongdae</option>
+                  <option value="37.5547,126.9707">Seoul Station</option>
+                  <option value="37.5714,127.0095">Dongdaemun</option>
+                  <option value="37.5133,127.1002">Jamsil</option>
+                  <option value="37.4602,126.4407">Incheon Airport</option>
+                </select>
+              </div>
+              <div class="field">
+                <button id="sound-btn" class="btn" type="button" aria-pressed="false">Sound is off</button>
+                <span class="hint">Optional page rustle and a soft chime.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="page-colophon" class="page page-colophon" role="group" aria-roledescription="page">
+          <div class="page-inner">
+            <h2>Before you go</h2>
+            <p><span class="run-in">Dates.</span> Closing dates come from press coverage and listings gathered in November 2026, not from a museum feed, and may have changed.</p>
+            <p><span class="run-in">Hours.</span> Assumed to be 10:00–18:00, Tuesday to Sunday, with last entry at 17:00. Evening openings and holiday closures vary, so check <a href="https://www.mmca.go.kr/eng/" rel="noopener">mmca.go.kr</a> before you leave.</p>
+          </div>
+        </section>
+
+      </div>
+      <span class="spine" aria-hidden="true"></span>
+      <span class="staple staple-top" aria-hidden="true"></span>
+      <span class="staple staple-bottom" aria-hidden="true"></span>
+    </div>
+
+    <nav class="turn" aria-label="Booklet pages">
+      <button id="prev-btn" class="turn-btn" type="button">Back</button>
+      <button id="next-btn" class="turn-btn" type="button">Turn the page</button>
+    </nav>
+
+    <p id="status" class="status" role="status"></p>
+    <p id="announcer" class="visually-hidden" aria-live="polite"></p>
+
+    <noscript>
+      <p class="status is-error">This booklet needs JavaScript to rank the shows.</p>
+    </noscript>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
